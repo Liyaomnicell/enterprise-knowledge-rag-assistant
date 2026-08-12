@@ -6,10 +6,17 @@ from app.models.schemas import (
     SourceDocument,
 )
 
+from app.rag.pipeline import RAGPipeline
+
 
 app = FastAPI(
     title="Enterprise Knowledge RAG Assistant",
-    version="0.1.0"
+    version="0.2.0",
+)
+
+
+rag_pipeline = RAGPipeline(
+    document_directory="data/documents"
 )
 
 
@@ -20,14 +27,34 @@ def health_check():
     }
 
 
-@app.post("/ask", response_model=AskResponse)
-def ask_question(request: AskRequest):
+@app.post(
+    "/ask",
+    response_model=AskResponse,
+)
+def ask_question(
+    request: AskRequest,
+):
+
+    answer, retrieval_results = (
+        rag_pipeline.ask(
+            question=request.question,
+            top_k=3,
+        )
+    )
+
+    sources = [
+        SourceDocument(
+            document_name=(
+                result.chunk.document_name
+            ),
+            content=(
+                result.chunk.content
+            ),
+        )
+        for result in retrieval_results
+    ]
+
     return AskResponse(
-        answer=f"You asked: {request.question}",
-        sources=[
-            SourceDocument(
-                document_name="placeholder.md",
-                content="Document retrieval will be implemented in the next step."
-            )
-        ]
+        answer=answer,
+        sources=sources,
     )
