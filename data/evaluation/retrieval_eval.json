@@ -1,0 +1,177 @@
+[
+  {
+    "id": "db_001",
+    "question": "Why can database downgrade cause data loss?",
+    "expected_documents": [
+      "database_downgrade.md"
+    ],
+    "answerable": true,
+    "category": "database"
+  },
+  {
+    "id": "db_002",
+    "question": "What destructive schema operations may happen during a database downgrade?",
+    "expected_documents": [
+      "database_downgrade.md"
+    ],
+    "answerable": true,
+    "category": "database"
+  },
+  {
+    "id": "db_003",
+    "question": "What should be checked before performing a database downgrade?",
+    "expected_documents": [
+      "database_downgrade.md"
+    ],
+    "answerable": true,
+    "category": "database"
+  },
+
+  {
+    "id": "api_001",
+    "question": "What can cause intermittent REST API timeout errors?",
+    "expected_documents": [
+      "api_timeout.md"
+    ],
+    "answerable": true,
+    "category": "api"
+  },
+  {
+    "id": "api_002",
+    "question": "How should I investigate slow API responses?",
+    "expected_documents": [
+      "api_timeout.md"
+    ],
+    "answerable": true,
+    "category": "api"
+  },
+  {
+    "id": "api_003",
+    "question": "When should long-running API work be moved to asynchronous processing?",
+    "expected_documents": [
+      "api_timeout.md"
+    ],
+    "answerable": true,
+    "category": "api"
+  },
+
+  {
+    "id": "cache_001",
+    "question": "What kinds of data are suitable for caching?",
+    "expected_documents": [
+      "cache_strategy.md"
+    ],
+    "answerable": true,
+    "category": "cache"
+  },
+  {
+    "id": "cache_002",
+    "question": "What are common risks of application caching?",
+    "expected_documents": [
+      "cache_strategy.md"
+    ],
+    "answerable": true,
+    "category": "cache"
+  },
+  {
+    "id": "cache_003",
+    "question": "How does the cache-aside pattern work?",
+    "expected_documents": [
+      "cache_strategy.md"
+    ],
+    "answerable": true,
+    "category": "cache"
+  },
+
+  {
+    "id": "retry_001",
+    "question": "Which errors should normally be retried?",
+    "expected_documents": [
+      "service_retry_policy.md"
+    ],
+    "answerable": true,
+    "category": "reliability"
+  },
+  {
+    "id": "retry_002",
+    "question": "Why should exponential backoff and jitter be used for retries?",
+    "expected_documents": [
+      "service_retry_policy.md"
+    ],
+    "answerable": true,
+    "category": "reliability"
+  },
+  {
+    "id": "retry_003",
+    "question": "Which errors should not be retried?",
+    "expected_documents": [
+      "service_retry_policy.md"
+    ],
+    "answerable": true,
+    "category": "reliability"
+  },
+
+  {
+    "id": "release_001",
+    "question": "What should be checked before releasing a new software version?",
+    "expected_documents": [
+      "release_checklist.md"
+    ],
+    "answerable": true,
+    "category": "release"
+  },
+  {
+    "id": "release_002",
+    "question": "Should rollback procedures be verified before deployment?",
+    "expected_documents": [
+      "release_checklist.md"
+    ],
+    "answerable": true,
+    "category": "release"
+  },
+  {
+    "id": "release_003",
+    "question": "What testing should happen after deployment?",
+    "expected_documents": [
+      "release_checklist.md"
+    ],
+    "answerable": true,
+    "category": "release"
+  },
+
+  {
+    "id": "unknown_001",
+    "question": "What is the company's vacation policy?",
+    "expected_documents": [],
+    "answerable": false,
+    "category": "unknown"
+  },
+  {
+    "id": "unknown_002",
+    "question": "How many paid sick days do employees receive?",
+    "expected_documents": [],
+    "answerable": false,
+    "category": "unknown"
+  },
+  {
+    "id": "unknown_003",
+    "question": "What is the recommended Kubernetes autoscaling policy?",
+    "expected_documents": [],
+    "answerable": false,
+    "category": "unknown"
+  },
+  {
+    "id": "unknown_004",
+    "question": "Which programming language should the frontend team use?",
+    "expected_documents": [],
+    "answerable": false,
+    "category": "unknown"
+  },
+  {
+    "id": "unknown_005",
+    "question": "What is the disaster recovery RTO for the production system?",
+    "expected_documents": [],
+    "answerable": false,
+    "category": "unknown"
+  }
+]
