@@ -47,7 +47,7 @@
   },
   {
     "id": "api_003",
-    "question": "When should long-running API work be moved to asynchronous processing?",
+    "question": "What processing approach is recommended for long-running API work?",
     "expected_documents": [
       "api_timeout.md"
     ],
@@ -174,4 +174,92 @@
     "answerable": false,
     "category": "unknown"
   }
+  ,
+  {
+    "id": "retry_004",
+    "category": "paraphrase",
+    "question": "A downstream service temporarily returns HTTP 503. Should the client attempt the operation again?",
+    "answerable": true,
+    "expected_documents": [
+      "service_retry_policy.md"
+    ],
+    "expected_evidence": [
+      "HTTP 503 responses"
+    ]
+  },
+    {
+    "id": "cache_004",
+    "question": "How can an application reduce repeated database reads for information that changes infrequently?",
+    "expected_documents": [
+        "cache_strategy.md"
+    ],
+    "answerable": true,
+    "category": "paraphrase"
+    },
+    {
+    "id": "api_004",
+    "question": "Requests are occasionally taking much longer than expected. What areas should engineers inspect to identify the bottleneck?",
+    "expected_documents": [
+        "api_timeout.md"
+    ],
+    "answerable": true,
+    "category": "paraphrase"
+    },
+    {
+    "id": "release_004",
+    "question": "Before putting a new build into production, what operational and quality checks should the team complete?",
+    "expected_documents": [
+        "release_checklist.md"
+    ],
+    "answerable": true,
+    "category": "paraphrase"
+    },
+    {
+    "id": "hard_negative_001",
+    "question": "How many seconds should the service wait before declaring a downstream request permanently failed?",
+    "expected_documents": [],
+    "answerable": false,
+    "category": "hard_negative"
+    },
+    {
+    "id": "hard_negative_002",
+    "question": "What exact TTL value should be configured for the application cache?",
+    "expected_documents": [],
+    "answerable": false,
+    "category": "hard_negative"
+    },
+    {
+    "id": "hard_negative_003",
+    "question": "How many retry attempts must every production service perform before giving up?",
+    "expected_documents": [],
+    "answerable": false,
+    "category": "hard_negative"
+    },
+    {
+    "id": "hard_negative_004",
+    "question": "Which database backup product should be used before performing a downgrade?",
+    "expected_documents": [],
+    "answerable": false,
+    "category": "hard_negative"
+    },
+    {
+    "id": "multi_001",
+    "question": "What should the engineering team consider when releasing a new software version that includes database schema changes?",
+    "expected_documents": [
+        "database_downgrade.md",
+        "release_checklist.md"
+    ],
+    "answerable": true,
+    "category": "multi_document"
+    },
+    {
+    "id": "multi_002",
+    "question": "A backend API is timing out because a downstream service is temporarily unavailable. What should engineers investigate and how should transient failures be handled?",
+    "expected_documents": [
+        "api_timeout.md",
+        "service_retry_policy.md"
+    ],
+    "answerable": true,
+    "category": "multi_document"
+    }
 ]

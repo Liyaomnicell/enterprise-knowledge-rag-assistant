@@ -15,28 +15,35 @@ Establish the initial retrieval quality baseline before introducing retrieval th
 
 ## Evaluation Dataset
 
-- Answerable questions: 15
-- Unanswerable questions: 5
+- Answerable questions: 21
+- Unanswerable questions: 9
 
 ## Retrieval Metrics
 
 | Metric | Result |
 |---|---:|
-| Hit@1 | 1.000 |
+| Hit@1 | 0.952 |
 | Hit@3 | 1.000 |
-| MRR | 1.000 |
+| MRR | 0.976 |
 
 ## Unknown Query Analysis
 
 - Minimum Top-1 score: 0.073
-- Maximum Top-1 score: 0.376
-- Average Top-1 score: 0.228
+- Maximum Top-1 score: 0.722
+- Average Top-1 score: 0.406
 
 These values will be compared with relevant-query similarity scores before selecting a no-answer threshold.
 
 ## Hit@1 Failures
 
-No Hit@1 failures were observed.
+### retry_004
+
+Question: A downstream service temporarily returns HTTP 503. Should the client attempt the operation again?
+
+Expected: service_retry_policy.md
+
+Retrieved ranking: api_timeout.md, service_retry_policy.md, cache_strategy.md
+
 ## Unknown Query Details
 
 ### unknown_001
@@ -78,6 +85,38 @@ Question: What is the disaster recovery RTO for the production system?
 Top score: 0.376
 
 Top retrieved document: `service_retry_policy.md`
+
+### hard_negative_001
+
+Question: How many seconds should the service wait before declaring a downstream request permanently failed?
+
+Top score: 0.563
+
+Top retrieved document: `api_timeout.md`
+
+### hard_negative_002
+
+Question: What exact TTL value should be configured for the application cache?
+
+Top score: 0.722
+
+Top retrieved document: `cache_strategy.md`
+
+### hard_negative_003
+
+Question: How many retry attempts must every production service perform before giving up?
+
+Top score: 0.611
+
+Top retrieved document: `service_retry_policy.md`
+
+### hard_negative_004
+
+Question: Which database backup product should be used before performing a downgrade?
+
+Top score: 0.621
+
+Top retrieved document: `database_downgrade.md`
 
 ## Initial Interpretation
 

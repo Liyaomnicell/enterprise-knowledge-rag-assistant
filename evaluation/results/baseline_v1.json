@@ -1,7 +1,7 @@
 {
   "experiment": {
     "name": "baseline_v1",
-    "created_at": "2026-08-12T13:51:58.688583",
+    "created_at": "2026-08-12T16:36:36.559742",
     "description": "Initial semantic retrieval baseline using fixed-size character chunking."
   },
   "configuration": {
@@ -14,20 +14,22 @@
   },
   "dataset": {
     "source": "data/evaluation/retrieval_eval.json",
-    "answerable_questions": 15,
-    "unanswerable_questions": 5
+    "answerable_questions": 21,
+    "unanswerable_questions": 9
   },
   "metrics": {
-    "question_count": 15,
-    "hit_at_1": 1.0,
+    "question_count": 21,
+    "hit_at_1": 0.952381,
     "hit_at_3": 1.0,
-    "mrr": 1.0
+    "mrr": 0.97619,
+    "recall_at_1": 0.904762,
+    "recall_at_3": 1.0
   },
   "unknown_query_analysis": {
-    "question_count": 5,
+    "question_count": 9,
     "min_top_score": 0.072749,
-    "max_top_score": 0.375565,
-    "average_top_score": 0.227662
+    "max_top_score": 0.721825,
+    "average_top_score": 0.406084
   },
   "answerable_results": [
     {
@@ -47,6 +49,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.710095,
       "retrieved_chunks": [
         {
           "document_name": "database_downgrade.md",
@@ -117,6 +122,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.720823,
       "retrieved_chunks": [
         {
           "document_name": "database_downgrade.md",
@@ -187,6 +195,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.792893,
       "retrieved_chunks": [
         {
           "document_name": "database_downgrade.md",
@@ -257,6 +268,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.784091,
       "retrieved_chunks": [
         {
           "document_name": "api_timeout.md",
@@ -327,6 +341,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.472777,
       "retrieved_chunks": [
         {
           "document_name": "api_timeout.md",
@@ -397,6 +414,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.368229,
       "retrieved_chunks": [
         {
           "document_name": "api_timeout.md",
@@ -467,6 +487,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.713547,
       "retrieved_chunks": [
         {
           "document_name": "cache_strategy.md",
@@ -537,6 +560,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.730184,
       "retrieved_chunks": [
         {
           "document_name": "cache_strategy.md",
@@ -607,6 +633,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.429225,
       "retrieved_chunks": [
         {
           "document_name": "cache_strategy.md",
@@ -677,6 +706,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.507344,
       "retrieved_chunks": [
         {
           "document_name": "service_retry_policy.md",
@@ -747,6 +779,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.500373,
       "retrieved_chunks": [
         {
           "document_name": "service_retry_policy.md",
@@ -817,6 +852,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.521306,
       "retrieved_chunks": [
         {
           "document_name": "service_retry_policy.md",
@@ -887,6 +925,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.781363,
       "retrieved_chunks": [
         {
           "document_name": "release_checklist.md",
@@ -957,6 +998,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.425568,
       "retrieved_chunks": [
         {
           "document_name": "release_checklist.md",
@@ -1027,6 +1071,9 @@
       "hit_at_1": true,
       "hit_at_3": true,
       "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.602669,
       "retrieved_chunks": [
         {
           "document_name": "release_checklist.md",
@@ -1077,6 +1124,444 @@
           "document_name": "service_retry_policy.md",
           "chunk_id": "service_retry_policy-1",
           "score": 0.1322
+        }
+      ]
+    },
+    {
+      "id": "retry_004",
+      "category": "paraphrase",
+      "question": "A downstream service temporarily returns HTTP 503. Should the client attempt the operation again?",
+      "expected_documents": [
+        "service_retry_policy.md"
+      ],
+      "ranked_documents": [
+        "api_timeout.md",
+        "service_retry_policy.md",
+        "cache_strategy.md",
+        "release_checklist.md",
+        "database_downgrade.md"
+      ],
+      "hit_at_1": false,
+      "hit_at_3": true,
+      "reciprocal_rank": 0.5,
+      "recall_at_1": 0.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.389705,
+      "retrieved_chunks": [
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-1",
+          "score": 0.445003
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-1",
+          "score": 0.389705
+        },
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-0",
+          "score": 0.382549
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-0",
+          "score": 0.360508
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-1",
+          "score": 0.198557
+        },
+        {
+          "document_name": "release_checklist.md",
+          "chunk_id": "release_checklist-1",
+          "score": 0.18225
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-1",
+          "score": 0.124561
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-3",
+          "score": 0.083249
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-0",
+          "score": 0.072912
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-0",
+          "score": 0.069829
+        }
+      ]
+    },
+    {
+      "id": "cache_004",
+      "category": "paraphrase",
+      "question": "How can an application reduce repeated database reads for information that changes infrequently?",
+      "expected_documents": [
+        "cache_strategy.md"
+      ],
+      "ranked_documents": [
+        "cache_strategy.md",
+        "service_retry_policy.md",
+        "database_downgrade.md",
+        "api_timeout.md"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.548417,
+      "retrieved_chunks": [
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-0",
+          "score": 0.548417
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-1",
+          "score": 0.413191
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-1",
+          "score": 0.37171
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-0",
+          "score": 0.297381
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-2",
+          "score": 0.285783
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-3",
+          "score": 0.233183
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-1",
+          "score": 0.221696
+        },
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-1",
+          "score": 0.201459
+        },
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-0",
+          "score": 0.175003
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-0",
+          "score": 0.151789
+        }
+      ]
+    },
+    {
+      "id": "api_004",
+      "category": "paraphrase",
+      "question": "Requests are occasionally taking much longer than expected. What areas should engineers inspect to identify the bottleneck?",
+      "expected_documents": [
+        "api_timeout.md"
+      ],
+      "ranked_documents": [
+        "api_timeout.md",
+        "service_retry_policy.md",
+        "cache_strategy.md",
+        "release_checklist.md",
+        "database_downgrade.md"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.421938,
+      "retrieved_chunks": [
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-1",
+          "score": 0.421938
+        },
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-0",
+          "score": 0.412708
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-1",
+          "score": 0.386088
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-0",
+          "score": 0.303416
+        },
+        {
+          "document_name": "release_checklist.md",
+          "chunk_id": "release_checklist-1",
+          "score": 0.225942
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-0",
+          "score": 0.191908
+        },
+        {
+          "document_name": "release_checklist.md",
+          "chunk_id": "release_checklist-0",
+          "score": 0.162926
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-1",
+          "score": 0.136674
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-3",
+          "score": 0.053302
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-2",
+          "score": 0.029444
+        }
+      ]
+    },
+    {
+      "id": "release_004",
+      "category": "paraphrase",
+      "question": "Before putting a new build into production, what operational and quality checks should the team complete?",
+      "expected_documents": [
+        "release_checklist.md"
+      ],
+      "ranked_documents": [
+        "release_checklist.md",
+        "database_downgrade.md",
+        "service_retry_policy.md",
+        "cache_strategy.md",
+        "api_timeout.md"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.546038,
+      "retrieved_chunks": [
+        {
+          "document_name": "release_checklist.md",
+          "chunk_id": "release_checklist-0",
+          "score": 0.546038
+        },
+        {
+          "document_name": "release_checklist.md",
+          "chunk_id": "release_checklist-1",
+          "score": 0.371818
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-2",
+          "score": 0.300204
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-0",
+          "score": 0.214929
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-3",
+          "score": 0.211475
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-0",
+          "score": 0.18389
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-0",
+          "score": 0.173139
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-1",
+          "score": 0.165946
+        },
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-0",
+          "score": 0.154061
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-1",
+          "score": 0.149786
+        }
+      ]
+    },
+    {
+      "id": "multi_001",
+      "category": "multi_document",
+      "question": "What should the engineering team consider when releasing a new software version that includes database schema changes?",
+      "expected_documents": [
+        "database_downgrade.md",
+        "release_checklist.md"
+      ],
+      "ranked_documents": [
+        "release_checklist.md",
+        "database_downgrade.md",
+        "cache_strategy.md",
+        "service_retry_policy.md"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "recall_at_1": 0.5,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.578445,
+      "retrieved_chunks": [
+        {
+          "document_name": "release_checklist.md",
+          "chunk_id": "release_checklist-0",
+          "score": 0.578445
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-2",
+          "score": 0.570632
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-0",
+          "score": 0.514477
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-3",
+          "score": 0.443683
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-1",
+          "score": 0.389686
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-0",
+          "score": 0.249549
+        },
+        {
+          "document_name": "release_checklist.md",
+          "chunk_id": "release_checklist-1",
+          "score": 0.183288
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-1",
+          "score": 0.172008
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-0",
+          "score": 0.1399
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-1",
+          "score": 0.043302
+        }
+      ]
+    },
+    {
+      "id": "multi_002",
+      "category": "multi_document",
+      "question": "A backend API is timing out because a downstream service is temporarily unavailable. What should engineers investigate and how should transient failures be handled?",
+      "expected_documents": [
+        "api_timeout.md",
+        "service_retry_policy.md"
+      ],
+      "ranked_documents": [
+        "api_timeout.md",
+        "service_retry_policy.md",
+        "release_checklist.md",
+        "cache_strategy.md",
+        "database_downgrade.md"
+      ],
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "recall_at_1": 0.5,
+      "recall_at_3": 1.0,
+      "best_expected_score": 0.66523,
+      "retrieved_chunks": [
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-0",
+          "score": 0.66523
+        },
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-1",
+          "score": 0.560683
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-0",
+          "score": 0.50036
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-1",
+          "score": 0.433748
+        },
+        {
+          "document_name": "release_checklist.md",
+          "chunk_id": "release_checklist-1",
+          "score": 0.295024
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-1",
+          "score": 0.243754
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-0",
+          "score": 0.220017
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-1",
+          "score": 0.217423
+        },
+        {
+          "document_name": "release_checklist.md",
+          "chunk_id": "release_checklist-0",
+          "score": 0.16658
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-0",
+          "score": 0.155579
         }
       ]
     }
@@ -1194,6 +1679,98 @@
           "document_name": "service_retry_policy.md",
           "chunk_id": "service_retry_policy-1",
           "score": 0.201535
+        }
+      ]
+    },
+    {
+      "id": "hard_negative_001",
+      "category": "hard_negative",
+      "question": "How many seconds should the service wait before declaring a downstream request permanently failed?",
+      "top_score": 0.562547,
+      "retrieved_chunks": [
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-1",
+          "score": 0.562547
+        },
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-0",
+          "score": 0.451615
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-1",
+          "score": 0.435038
+        }
+      ]
+    },
+    {
+      "id": "hard_negative_002",
+      "category": "hard_negative",
+      "question": "What exact TTL value should be configured for the application cache?",
+      "top_score": 0.721825,
+      "retrieved_chunks": [
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-1",
+          "score": 0.721825
+        },
+        {
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-0",
+          "score": 0.495742
+        },
+        {
+          "document_name": "release_checklist.md",
+          "chunk_id": "release_checklist-1",
+          "score": 0.239243
+        }
+      ]
+    },
+    {
+      "id": "hard_negative_003",
+      "category": "hard_negative",
+      "question": "How many retry attempts must every production service perform before giving up?",
+      "top_score": 0.61101,
+      "retrieved_chunks": [
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-0",
+          "score": 0.61101
+        },
+        {
+          "document_name": "service_retry_policy.md",
+          "chunk_id": "service_retry_policy-1",
+          "score": 0.506355
+        },
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-1",
+          "score": 0.505072
+        }
+      ]
+    },
+    {
+      "id": "hard_negative_004",
+      "category": "hard_negative",
+      "question": "Which database backup product should be used before performing a downgrade?",
+      "top_score": 0.621066,
+      "retrieved_chunks": [
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-2",
+          "score": 0.621066
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-1",
+          "score": 0.529423
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-0",
+          "score": 0.48489
         }
       ]
     }

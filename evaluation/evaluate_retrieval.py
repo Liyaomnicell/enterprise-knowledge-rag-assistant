@@ -7,11 +7,13 @@ from app.rag.chunker import chunk_documents
 from app.rag.embedding import EmbeddingService
 from app.rag.retriever import SemanticRetriever
 
+
 EVALUATION_FILE = "data/evaluation/retrieval_eval.json"
 
 RESULT_DIR = Path("evaluation/results")
 JSON_RESULT_FILE = RESULT_DIR / "baseline_v1.json"
 MARKDOWN_RESULT_FILE = RESULT_DIR / "baseline_v1.md"
+
 
 def load_evaluation_dataset():
     with open(
@@ -69,6 +71,97 @@ def reciprocal_rank(
     return 0.0
 
 
+def recall_at_k(
+    ranked_documents,
+    expected_documents,
+    k,
+):
+    """
+    Calculate document-level Recall@K.
+
+    Recall@K measures what fraction of the
+    expected documents appear in the top K
+    retrieved documents.
+
+    Example:
+
+    expected_documents = ["A", "B"]
+    ranked_documents = ["A", "C", "D", "B"]
+
+    Recall@1 = 1 / 2 = 0.5
+    Recall@3 = 1 / 2 = 0.5
+    Recall@4 = 2 / 2 = 1.0
+    """
+
+    if not expected_documents:
+        return 0.0
+
+    top_k_documents = set(
+        ranked_documents[:k]
+    )
+
+    expected_document_set = set(
+        expected_documents
+    )
+
+    retrieved_expected_documents = (
+        top_k_documents
+        & expected_document_set
+    )
+
+    return (
+        len(retrieved_expected_documents)
+        / len(expected_document_set)
+    )
+
+def evidence_hit_at_k(
+    retrieval_results,
+    expected_evidence,
+    k,
+):
+    if not expected_evidence:
+        return None
+
+    top_k_results = retrieval_results[:k]
+
+    combined_content = "\n".join(
+        result.chunk.content
+        for result in top_k_results
+    ).lower()
+
+    return any(
+        evidence.lower() in combined_content
+        for evidence in expected_evidence
+    )
+
+def evidence_recall_at_k(
+    retrieval_results,
+    expected_evidence,
+    k,
+):
+    if not expected_evidence:
+        return None
+
+    top_k_results = retrieval_results[:k]
+
+    combined_content = "\n".join(
+        result.chunk.content
+        for result in top_k_results
+    ).lower()
+
+    matched_count = sum(
+        1
+        for evidence in expected_evidence
+        if evidence.lower()
+        in combined_content
+    )
+
+    return (
+        matched_count
+        / len(expected_evidence)
+    )
+
+
 def evaluate_answerable_queries(
     dataset,
     retriever,
@@ -79,43 +172,68 @@ def evaluate_answerable_queries(
     hit_at_1_count = 0
     hit_at_3_count = 0
     reciprocal_rank_sum = 0.0
+    recall_at_1_sum = 0.0
+    recall_at_3_sum = 0.0
 
     for item in dataset:
 
+        # Skip unanswerable queries.
         if not item["answerable"]:
             continue
 
         total_answerable += 1
 
+        question = item["question"]
+        expected_documents = item["expected_documents"]
+
+        # Retrieve chunks for this question.
         retrieval_results = retriever.retrieve(
-            query=item["question"],
+            query=question,
             top_k=10,
         )
 
+        # Convert chunk-level results into
+        # a unique document-level ranking.
         ranked_documents = get_document_ranking(
             retrieval_results
         )
 
-        expected_documents = item[
-            "expected_documents"
-        ]
-
         top_1 = ranked_documents[:1]
         top_3 = ranked_documents[:3]
 
+        # Hit@1:
+        # Did any expected document appear at rank 1?
         hit1 = any(
             document in expected_documents
             for document in top_1
         )
 
+        # Hit@3:
+        # Did any expected document appear in the top 3?
         hit3 = any(
             document in expected_documents
             for document in top_3
         )
 
+        # Reciprocal Rank:
+        # Rank 1 -> 1.0
+        # Rank 2 -> 0.5
+        # Rank 3 -> 0.333...
         rr = reciprocal_rank(
             ranked_documents,
             expected_documents,
+        )
+
+        recall1 = recall_at_k(
+            ranked_documents,
+            expected_documents,
+            k=1,
+        )
+
+        recall3 = recall_at_k(
+            ranked_documents,
+            expected_documents,
+            k=3,
         )
 
         if hit1:
@@ -125,59 +243,184 @@ def evaluate_answerable_queries(
             hit_at_3_count += 1
 
         reciprocal_rank_sum += rr
+        recall_at_1_sum += recall1
+        recall_at_3_sum += recall3
 
+        # -------------------------------------------------
+        # Calculate best_expected_score
+        # -------------------------------------------------
+        #
+        # A document may have multiple chunks.
+        #
+        # Example:
+        #
+        # database_downgrade.md chunk-0 -> 0.63
+        # database_downgrade.md chunk-1 -> 0.71
+        # database_downgrade.md chunk-2 -> 0.60
+        #
+        # If database_downgrade.md is the expected document,
+        # best_expected_score should be 0.71.
+        #
+        # We do NOT simply use retrieval_results[0].score,
+        # because the Top-1 retrieved result could belong
+        # to the wrong document.
+
+        expected_scores = [
+            result.score
+            for result in retrieval_results
+            if (
+                result.chunk.document_name
+                in expected_documents
+            )
+        ]
+
+        best_expected_score = (
+            max(expected_scores)
+            if expected_scores
+            else 0.0
+        )
+
+        # Save detailed chunk-level retrieval results.
         retrieved_chunks = []
 
         for result in retrieval_results:
-            retrieved_chunks.append({
-                "document_name":
-                    result.chunk.document_name,
-                "chunk_id":
-                    result.chunk.chunk_id,
-                "score":
-                    round(result.score, 6),
-            })
+            retrieved_chunks.append(
+                {
+                    "document_name":
+                        result.chunk.document_name,
 
-        results_detail.append({
-            "id": item["id"],
-            "category": item["category"],
-            "question": item["question"],
-            "expected_documents":
-                expected_documents,
-            "ranked_documents":
-                ranked_documents,
-            "hit_at_1": hit1,
-            "hit_at_3": hit3,
-            "reciprocal_rank":
-                round(rr, 6),
-            "retrieved_chunks":
-                retrieved_chunks,
-        })
+                    "chunk_id":
+                        result.chunk.chunk_id,
+
+                    "score":
+                        round(
+                            result.score,
+                            6,
+                        ),
+                }
+            )
+
+        # Save evaluation result for this question.
+        results_detail.append(
+            {
+                "id":
+                    item["id"],
+
+                "category":
+                    item["category"],
+
+                "question":
+                    question,
+
+                "expected_documents":
+                    expected_documents,
+
+                "ranked_documents":
+                    ranked_documents,
+
+                "hit_at_1":
+                    hit1,
+
+                "hit_at_3":
+                    hit3,
+
+                "reciprocal_rank":
+                    round(
+                        rr,
+                        6,
+                    ),
+                "recall_at_1":
+                    round(
+                        recall1,
+                        6,
+                    ),
+
+                "recall_at_3":
+                    round(
+                        recall3,
+                        6,
+                    ),
+
+                "best_expected_score":
+                    round(
+                        best_expected_score,
+                        6,
+                    ),
+
+                "retrieved_chunks":
+                    retrieved_chunks,
+            }
+        )
+
+    if total_answerable == 0:
+        raise ValueError(
+            "No answerable questions found "
+            "in evaluation dataset."
+        )
+
+    hit_at_1 = (
+        hit_at_1_count
+        / total_answerable
+    )
+
+    hit_at_3 = (
+        hit_at_3_count
+        / total_answerable
+    )
+
+    mrr = (
+        reciprocal_rank_sum
+        / total_answerable
+    )
+
+    recall_at_1 = (
+        recall_at_1_sum
+        / total_answerable
+    )
+
+    recall_at_3 = (
+        recall_at_3_sum
+        / total_answerable
+    )
 
     metrics = {
         "question_count":
             total_answerable,
+
         "hit_at_1":
             round(
-                hit_at_1_count
-                / total_answerable,
+                hit_at_1,
                 6,
             ),
+
         "hit_at_3":
             round(
-                hit_at_3_count
-                / total_answerable,
+                hit_at_3,
                 6,
             ),
+
         "mrr":
             round(
-                reciprocal_rank_sum
-                / total_answerable,
+                mrr,
+                6,
+            ),
+        "recall_at_1":
+            round(
+                recall_at_1,
+                6,
+            ),
+
+        "recall_at_3":
+            round(
+                recall_at_3,
                 6,
             ),
     }
 
-    return metrics, results_detail
+    return (
+        metrics,
+        results_detail,
+    )
 
 
 def evaluate_unknown_queries(
@@ -670,6 +913,16 @@ def evaluate():
         f"{metrics['mrr']:.3f}"
     )
 
+    print(
+        f"Recall@1: "
+        f"{metrics['recall_at_1']:.3f}"
+    )
+
+    print(
+        f"Recall@3: "
+        f"{metrics['recall_at_3']:.3f}"
+    )
+
     print()
 
     print(
@@ -703,5 +956,7 @@ def evaluate():
         f"{MARKDOWN_RESULT_FILE}"
     )
 
+
 if __name__ == "__main__":
     evaluate()
+
