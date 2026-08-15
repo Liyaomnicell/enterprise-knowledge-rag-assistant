@@ -10,6 +10,12 @@ from app.rag.chunker import (
 from app.rag.embedding import (
     EmbeddingService,
 )
+from app.rag.in_memory_vector_store import (
+    InMemoryVectorStore,
+)
+from app.rag.indexing import (
+    IndexingService,
+)
 from app.rag.retriever import (
     SemanticRetriever,
 )
@@ -53,9 +59,24 @@ def build_retriever():
         EmbeddingService()
     )
 
+    vector_store = (
+        InMemoryVectorStore()
+    )
+
+    indexing_service = (
+        IndexingService(
+            embedding_service=embedding_service,
+            vector_store=vector_store,
+        )
+    )
+
+    indexing_service.index(
+        chunks
+    )
+
     return SemanticRetriever(
-        chunks=chunks,
         embedding_service=embedding_service,
+        vector_store=vector_store,
     )
 
 

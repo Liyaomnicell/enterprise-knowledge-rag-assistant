@@ -35,6 +35,7 @@ def chunk_document(
                 document_name=document.document_name,
                 content=chunk_text,
                 chunk_index=chunk_index,
+                metadata=document.metadata.copy(),
             )
 
             chunks.append(chunk)
@@ -81,6 +82,7 @@ def chunk_document_by_paragraph(
                     document_name=document.document_name,
                     content=current_chunk,
                     chunk_index=chunk_index,
+                    metadata=document.metadata.copy(),
                 )
             )
 
@@ -96,6 +98,7 @@ def chunk_document_by_paragraph(
                 document_name=document.document_name,
                 content=current_chunk,
                 chunk_index=chunk_index,
+                metadata=document.metadata.copy(),
             )
         )
 

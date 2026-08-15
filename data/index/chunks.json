@@ -1,0 +1,134 @@
+[
+  {
+    "chunk_id": "api_timeout-0",
+    "document_id": "api_timeout",
+    "document_name": "api_timeout.md",
+    "content": "# REST API Timeout Troubleshooting\n\n## Problem\n\nA backend REST API intermittently returns timeout errors.\n\n## Possible Causes\n\n- Downstream service latency\n- Database query performance\n- Connection pool exhaustion\n- Network instability\n- Excessive synchronous processing\n\n## Investigation Steps\n\n1. Review API latency metrics.\n2. Check downstream service response times.\n3. Inspect database slow-query logs.\n4. Check thread and connection pool utilization.\n5. Review timeout and retry configuration.",
+    "chunk_index": 0,
+    "metadata": {
+      "category": "api",
+      "document_type": "guideline"
+    }
+  },
+  {
+    "chunk_id": "api_timeout-1",
+    "document_id": "api_timeout",
+    "document_name": "api_timeout.md",
+    "content": "y logs.\n4. Check thread and connection pool utilization.\n5. Review timeout and retry configuration.\n6. Trace the request across dependent services.\n\n## Mitigation\n\nLong-running work should be moved to asynchronous processing when appropriate.\n\nRetries should use bounded retry counts and exponential backoff.\n\nTimeouts should be configured explicitly instead of relying on defaults.",
+    "chunk_index": 1,
+    "metadata": {
+      "category": "api",
+      "document_type": "guideline"
+    }
+  },
+  {
+    "chunk_id": "cache_strategy-0",
+    "document_id": "cache_strategy",
+    "document_name": "cache_strategy.md",
+    "content": "# Application Cache Strategy\n\nCaching can reduce database load and improve application response time.\n\n## Suitable Data\n\nCaching is appropriate for:\n\n- Frequently read data\n- Expensive computations\n- Data that changes infrequently\n\n## Risks\n\nCommon caching risks include:\n\n- Stale data\n- Cache stampede\n- Inconsistent cache invalidation\n- Memory pressure\n\n## Recommended Pattern\n\nUse cache-aside when the application can tolerate temporary cache misses.\n\nThe application first checks the cache. If th",
+    "chunk_index": 0,
+    "metadata": {
+      "category": "performance",
+      "document_type": "design_guideline"
+    }
+  },
+  {
+    "chunk_id": "cache_strategy-1",
+    "document_id": "cache_strategy",
+    "document_name": "cache_strategy.md",
+    "content": "the application can tolerate temporary cache misses.\n\nThe application first checks the cache. If the value is missing, it retrieves the value from the database and stores it in the cache.\n\nTTL values should be selected based on business requirements and acceptable staleness.",
+    "chunk_index": 1,
+    "metadata": {
+      "category": "performance",
+      "document_type": "design_guideline"
+    }
+  },
+  {
+    "chunk_id": "database_downgrade-0",
+    "document_id": "database_downgrade",
+    "document_name": "database_downgrade.md",
+    "content": "# Database Downgrade Troubleshooting Guide\n\n## Problem\n\nA software deployment may fail when downgrading a database from a newer application version to an older version.\n\n## Symptoms\n\nTypical symptoms include:\n\n- Deployment script exits with an error.\n- Database schema deployment reports possible data loss.\n- Columns or tables introduced by the newer version cannot be mapped to the older schema.\n- Application startup fails after downgrade.\n\n## Root Cause\n\nDatabase downgrade may require destructiv",
+    "chunk_index": 0,
+    "metadata": {
+      "category": "database",
+      "document_type": "troubleshooting"
+    }
+  },
+  {
+    "chunk_id": "database_downgrade-1",
+    "document_id": "database_downgrade",
+    "document_name": "database_downgrade.md",
+    "content": "Application startup fails after downgrade.\n\n## Root Cause\n\nDatabase downgrade may require destructive schema operations such as:\n\n- Dropping columns\n- Dropping tables\n- Changing data types\n- Removing indexes\n\nThese changes can result in data loss.\n\nSetting a deployment option to allow possible data loss only disables the pre-deployment blocking check. It does not guarantee that the downgrade is safe.\n\n## Recommended Investigation\n\n1. Generate a deployment report before modifying the database.\n2.",
+    "chunk_index": 1,
+    "metadata": {
+      "category": "database",
+      "document_type": "troubleshooting"
+    }
+  },
+  {
+    "chunk_id": "database_downgrade-2",
+    "document_id": "database_downgrade",
+    "document_name": "database_downgrade.md",
+    "content": "fe.\n\n## Recommended Investigation\n\n1. Generate a deployment report before modifying the database.\n2. Review DROP and ALTER operations.\n3. Back up the target database.\n4. Verify whether data migration is required.\n5. Run the downgrade in a test environment.\n6. Validate application compatibility after the downgrade.\n\n## Recommendation\n\nDatabase downgrade should never be treated as a simple reverse upgrade. A downgrade strategy must explicitly define how schema and data differences are handled.",
+    "chunk_index": 2,
+    "metadata": {
+      "category": "database",
+      "document_type": "troubleshooting"
+    }
+  },
+  {
+    "chunk_id": "database_downgrade-3",
+    "document_id": "database_downgrade",
+    "document_name": "database_downgrade.md",
+    "content": "pgrade. A downgrade strategy must explicitly define how schema and data differences are handled.",
+    "chunk_index": 3,
+    "metadata": {
+      "category": "database",
+      "document_type": "troubleshooting"
+    }
+  },
+  {
+    "chunk_id": "release_checklist-0",
+    "document_id": "release_checklist",
+    "document_name": "release_checklist.md",
+    "content": "# Software Release Checklist\n\nBefore releasing a new software version:\n\n1. Complete automated regression testing.\n2. Review unresolved critical defects.\n3. Verify database migration scripts.\n4. Validate configuration changes.\n5. Confirm rollback procedures.\n6. Verify monitoring and logging.\n7. Confirm dependency versions.\n8. Review security vulnerabilities.\n9. Obtain required release approvals.\n10. Perform a post-deployment smoke test.",
+    "chunk_index": 0,
+    "metadata": {
+      "category": "release",
+      "document_type": "checklist"
+    }
+  },
+  {
+    "chunk_id": "release_checklist-1",
+    "document_id": "release_checklist",
+    "document_name": "release_checklist.md",
+    "content": ". Perform a post-deployment smoke test.",
+    "chunk_index": 1,
+    "metadata": {
+      "category": "release",
+      "document_type": "checklist"
+    }
+  },
+  {
+    "chunk_id": "service_retry_policy-0",
+    "document_id": "service_retry_policy",
+    "document_name": "service_retry_policy.md",
+    "content": "# Service Retry Policy\n\nRetries can improve resilience when failures are temporary.\n\n## Retryable Errors\n\nExamples include:\n\n- Temporary network failures\n- HTTP 429 responses\n- HTTP 503 responses\n- Transient database connection errors\n\n## Non-Retryable Errors\n\nExamples include:\n\n- Authentication failures\n- Invalid requests\n- Authorization failures\n- Business validation errors\n\n## Retry Strategy\n\nUse exponential backoff and introduce jitter to avoid synchronized retries.\n\nRetry attempts must be b",
+    "chunk_index": 0,
+    "metadata": {
+      "category": "reliability",
+      "document_type": "policy"
+    }
+  },
+  {
+    "chunk_id": "service_retry_policy-1",
+    "document_id": "service_retry_policy",
+    "document_name": "service_retry_policy.md",
+    "content": "se exponential backoff and introduce jitter to avoid synchronized retries.\n\nRetry attempts must be bounded.\n\nOperations should be idempotent when retries may cause duplicate requests.",
+    "chunk_index": 1,
+    "metadata": {
+      "category": "reliability",
+      "document_type": "policy"
+    }
+  }
+]

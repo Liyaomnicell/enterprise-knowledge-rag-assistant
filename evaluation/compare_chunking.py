@@ -15,6 +15,13 @@ from evaluation.evaluate_retrieval import (
     evaluate_unknown_queries,
 )
 
+from app.rag.in_memory_vector_store import (
+    InMemoryVectorStore,
+)
+
+from app.rag.indexing import (
+    IndexingService,
+)
 
 OUTPUT_FILE = Path(
     "evaluation/results/chunking_comparison.json"
@@ -32,11 +39,28 @@ def build_fixed_size_retriever():
         chunk_overlap=100,
     )
 
-    embedding_service = EmbeddingService()
+    embedding_service = (
+        EmbeddingService()
+    )
+
+    vector_store = (
+        InMemoryVectorStore()
+    )
+
+    indexing_service = (
+        IndexingService(
+            embedding_service=embedding_service,
+            vector_store=vector_store,
+        )
+    )
+
+    indexing_service.index(
+        chunks
+    )
 
     return SemanticRetriever(
-        chunks=chunks,
         embedding_service=embedding_service,
+        vector_store=vector_store,
     )
 
 
@@ -59,11 +83,28 @@ def build_paragraph_retriever():
             document_chunks
         )
 
-    embedding_service = EmbeddingService()
+    embedding_service = (
+        EmbeddingService()
+    )
+
+    vector_store = (
+        InMemoryVectorStore()
+    )
+
+    indexing_service = (
+        IndexingService(
+            embedding_service=embedding_service,
+            vector_store=vector_store,
+        )
+    )
+
+    indexing_service.index(
+        chunks
+    )
 
     return SemanticRetriever(
-        chunks=chunks,
         embedding_service=embedding_service,
+        vector_store=vector_store,
     )
 
 

@@ -4,7 +4,6 @@ from app.rag.document_loader import (
 
 from app.rag.chunker import (
     chunk_documents,
-    chunk_document_by_paragraph,
 )
 
 from app.rag.embedding import (
@@ -24,32 +23,30 @@ from app.rag.retriever import (
 )
 
 
-QUESTION = (
-    "A downstream service temporarily "
-    "returns HTTP 503. Should the client "
-    "attempt the operation again?"
-)
-
-
-def build_fixed():
+def main():
+    # 1. Load documents
     documents = load_documents(
         "data/documents"
     )
 
+    # 2. Chunk documents
     chunks = chunk_documents(
         documents,
         chunk_size=500,
         chunk_overlap=100,
     )
 
+    # 3. Create shared embedding service
     embedding_service = (
         EmbeddingService()
     )
 
+    # 4. Create vector store
     vector_store = (
         InMemoryVectorStore()
     )
 
+    # 5. Build the index
     indexing_service = (
         IndexingService(
             embedding_service=embedding_service,
@@ -61,113 +58,55 @@ def build_fixed():
         chunks
     )
 
-    return SemanticRetriever(
-        embedding_service=embedding_service,
-        vector_store=vector_store,
-    )
-
-
-def build_paragraph():
-    documents = load_documents(
-        "data/documents"
-    )
-
-    chunks = []
-
-    for document in documents:
-
-        chunks.extend(
-            chunk_document_by_paragraph(
-                document,
-                max_chunk_size=500,
-            )
-        )
-
-    embedding_service = (
-        EmbeddingService()
-    )
-
-    vector_store = (
-        InMemoryVectorStore()
-    )
-
-    indexing_service = (
-        IndexingService(
+    # 6. Create retriever
+    retriever = (
+        SemanticRetriever(
             embedding_service=embedding_service,
             vector_store=vector_store,
         )
     )
 
-    indexing_service.index(
-        chunks
+    # 7. Run a test query
+    question = (
+        "What are common risks "
+        "of application caching?"
     )
-
-    return SemanticRetriever(
-        embedding_service=embedding_service,
-        vector_store=vector_store,
-    )
-
-
-def print_results(
-    title,
-    retriever,
-):
-    print()
-    print("=" * 80)
-    print(title)
-    print("=" * 80)
 
     results = retriever.retrieve(
-        query=QUESTION,
-        top_k=5,
+        query=question,
+        top_k=3,
     )
 
-    for index, result in enumerate(
+    # 8. Print results
+    print()
+    print("=" * 80)
+    print("IN-MEMORY VECTOR STORE TEST")
+    print("=" * 80)
+
+    print()
+    print(f"Question: {question}")
+
+    for rank, result in enumerate(
         results,
         start=1,
     ):
         print()
         print("-" * 80)
-
-        print(
-            f"Rank: {index}"
-        )
-
+        print(f"Rank: {rank}")
         print(
             f"Document: "
             f"{result.chunk.document_name}"
         )
-
         print(
             f"Chunk ID: "
             f"{result.chunk.chunk_id}"
         )
-
         print(
             f"Score: "
             f"{result.score:.6f}"
         )
-
         print()
-
-        print(
-            result.chunk.content
-        )
-
-
-def main():
-    fixed = build_fixed()
-    paragraph = build_paragraph()
-
-    print_results(
-        "FIXED-SIZE",
-        fixed,
-    )
-
-    print_results(
-        "PARAGRAPH-AWARE",
-        paragraph,
-    )
+        print(result.chunk.content)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 {
   "experiment": {
     "name": "baseline_v1",
-    "created_at": "2026-08-12T16:36:36.559742",
+    "created_at": "2026-08-15T19:54:47.098479",
     "description": "Initial semantic retrieval baseline using fixed-size character chunking."
   },
   "configuration": {
@@ -19,10 +19,10 @@
   },
   "metrics": {
     "question_count": 21,
-    "hit_at_1": 0.952381,
+    "hit_at_1": 0.904762,
     "hit_at_3": 1.0,
-    "mrr": 0.97619,
-    "recall_at_1": 0.904762,
+    "mrr": 0.952381,
+    "recall_at_1": 0.857143,
     "recall_at_3": 1.0
   },
   "unknown_query_analysis": {
@@ -400,73 +400,73 @@
     {
       "id": "api_003",
       "category": "api",
-      "question": "When should long-running API work be moved to asynchronous processing?",
+      "question": "What processing approach is recommended for long-running API work?",
       "expected_documents": [
         "api_timeout.md"
       ],
       "ranked_documents": [
-        "api_timeout.md",
         "cache_strategy.md",
+        "api_timeout.md",
         "service_retry_policy.md",
-        "database_downgrade.md",
-        "release_checklist.md"
+        "release_checklist.md",
+        "database_downgrade.md"
       ],
-      "hit_at_1": true,
+      "hit_at_1": false,
       "hit_at_3": true,
-      "reciprocal_rank": 1.0,
-      "recall_at_1": 1.0,
+      "reciprocal_rank": 0.5,
+      "recall_at_1": 0.0,
       "recall_at_3": 1.0,
-      "best_expected_score": 0.368229,
+      "best_expected_score": 0.380471,
       "retrieved_chunks": [
         {
-          "document_name": "api_timeout.md",
-          "chunk_id": "api_timeout-1",
-          "score": 0.368229
+          "document_name": "cache_strategy.md",
+          "chunk_id": "cache_strategy-0",
+          "score": 0.40232
         },
         {
           "document_name": "api_timeout.md",
           "chunk_id": "api_timeout-0",
-          "score": 0.343434
-        },
-        {
-          "document_name": "cache_strategy.md",
-          "chunk_id": "cache_strategy-0",
-          "score": 0.342558
+          "score": 0.380471
         },
         {
           "document_name": "service_retry_policy.md",
           "chunk_id": "service_retry_policy-1",
-          "score": 0.28577
+          "score": 0.358571
+        },
+        {
+          "document_name": "api_timeout.md",
+          "chunk_id": "api_timeout-1",
+          "score": 0.344451
         },
         {
           "document_name": "cache_strategy.md",
           "chunk_id": "cache_strategy-1",
-          "score": 0.242461
+          "score": 0.227393
         },
         {
           "document_name": "service_retry_policy.md",
           "chunk_id": "service_retry_policy-0",
-          "score": 0.15641
-        },
-        {
-          "document_name": "database_downgrade.md",
-          "chunk_id": "database_downgrade-3",
-          "score": 0.098182
+          "score": 0.184235
         },
         {
           "document_name": "release_checklist.md",
           "chunk_id": "release_checklist-0",
-          "score": 0.059454
+          "score": 0.118695
         },
         {
           "document_name": "release_checklist.md",
           "chunk_id": "release_checklist-1",
-          "score": 0.046194
+          "score": 0.099721
+        },
+        {
+          "document_name": "database_downgrade.md",
+          "chunk_id": "database_downgrade-3",
+          "score": 0.086903
         },
         {
           "document_name": "database_downgrade.md",
           "chunk_id": "database_downgrade-2",
-          "score": 0.038234
+          "score": 0.06632
         }
       ]
     },

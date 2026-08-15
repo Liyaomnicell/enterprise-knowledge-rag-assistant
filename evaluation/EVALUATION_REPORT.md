@@ -299,3 +299,4 @@ different quality dimensions.
 
 Changes to chunking, embeddings, retrieval algorithms, vector stores,
 or reranking must be compared against the established baseline.
+

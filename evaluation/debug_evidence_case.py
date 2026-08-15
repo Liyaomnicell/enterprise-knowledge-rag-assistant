@@ -4,6 +4,8 @@ from pathlib import Path
 from app.rag.document_loader import load_documents
 from app.rag.chunker import chunk_documents
 from app.rag.embedding import EmbeddingService
+from app.rag.in_memory_vector_store import InMemoryVectorStore
+from app.rag.indexing import IndexingService
 from app.rag.retriever import SemanticRetriever
 from app.rag.evidence_checker import EvidenceSufficiencyChecker
 
@@ -45,9 +47,18 @@ def build_retriever():
 
     embedding_service = EmbeddingService()
 
-    return SemanticRetriever(
-        chunks=chunks,
+    vector_store = InMemoryVectorStore()
+
+    indexing_service = IndexingService(
         embedding_service=embedding_service,
+        vector_store=vector_store,
+    )
+
+    indexing_service.index(chunks)
+
+    return SemanticRetriever(
+        embedding_service=embedding_service,
+        vector_store=vector_store,
     )
 
 

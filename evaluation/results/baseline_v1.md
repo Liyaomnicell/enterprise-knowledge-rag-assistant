@@ -22,9 +22,9 @@ Establish the initial retrieval quality baseline before introducing retrieval th
 
 | Metric | Result |
 |---|---:|
-| Hit@1 | 0.952 |
+| Hit@1 | 0.905 |
 | Hit@3 | 1.000 |
-| MRR | 0.976 |
+| MRR | 0.952 |
 
 ## Unknown Query Analysis
 
@@ -35,6 +35,14 @@ Establish the initial retrieval quality baseline before introducing retrieval th
 These values will be compared with relevant-query similarity scores before selecting a no-answer threshold.
 
 ## Hit@1 Failures
+
+### api_003
+
+Question: What processing approach is recommended for long-running API work?
+
+Expected: api_timeout.md
+
+Retrieved ranking: cache_strategy.md, api_timeout.md, service_retry_policy.md
 
 ### retry_004
 

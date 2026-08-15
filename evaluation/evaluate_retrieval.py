@@ -7,6 +7,29 @@ from app.rag.chunker import chunk_documents
 from app.rag.embedding import EmbeddingService
 from app.rag.retriever import SemanticRetriever
 
+from app.rag.embedding import (
+    EmbeddingService,
+)
+
+from app.rag.in_memory_vector_store import (
+    InMemoryVectorStore,
+)
+
+from app.rag.indexing import (
+    IndexingService,
+)
+
+from app.rag.retriever import (
+    SemanticRetriever,
+)
+
+from app.rag.faiss_vector_store import (
+    FaissVectorStore,
+)
+
+from app.rag.bm25_retriever import (
+    BM25Retriever,
+)
 
 EVALUATION_FILE = "data/evaluation/retrieval_eval.json"
 
@@ -24,7 +47,10 @@ def load_evaluation_dataset():
         return json.load(file)
 
 
-def build_retriever():
+def build_retriever(
+    vector_store_type: str = "in_memory",
+):
+
     documents = load_documents(
         "data/documents"
     )
@@ -35,11 +61,58 @@ def build_retriever():
         chunk_overlap=100,
     )
 
-    embedding_service = EmbeddingService()
+    if vector_store_type == "bm25":
+        return BM25Retriever(
+            chunks=chunks,
+        )
 
-    retriever = SemanticRetriever(
-        chunks=chunks,
-        embedding_service=embedding_service,
+    embedding_service = (
+        EmbeddingService()
+    )
+
+    if vector_store_type == "in_memory":
+        vector_store = (
+            InMemoryVectorStore()
+        )
+
+    elif vector_store_type == "faiss_flat":
+        vector_store = (
+            FaissVectorStore(
+                dimension=384,
+                index_type="flat",
+            )
+        )
+
+    elif vector_store_type == "faiss_hnsw":
+        vector_store = (
+            FaissVectorStore(
+                dimension=384,
+                index_type="hnsw",
+            )
+        )
+
+    else:
+        raise ValueError(
+            f"Unsupported vector store type: "
+            f"{vector_store_type}"
+        )
+
+    indexing_service = (
+        IndexingService(
+            embedding_service=embedding_service,
+            vector_store=vector_store,
+        )
+    )
+
+    indexing_service.index(
+        chunks
+    )
+
+    retriever = (
+        SemanticRetriever(
+            embedding_service=embedding_service,
+            vector_store=vector_store,
+        )
     )
 
     return retriever
@@ -491,6 +564,199 @@ def evaluate_unknown_queries(
     }
 
     return score_summary, unknown_results
+
+def compare_vector_store_backends():
+
+    dataset = load_evaluation_dataset()
+
+    backend_types = [
+        "in_memory",
+        "faiss_flat",
+        "faiss_hnsw",
+    ]
+
+    print()
+    print("=" * 80)
+    print("VECTOR STORE REGRESSION COMPARISON")
+    print("=" * 80)
+
+    for backend_type in backend_types:
+
+        retriever = build_retriever(
+            vector_store_type=backend_type
+        )
+
+        metrics, _ = evaluate_answerable_queries(
+            dataset,
+            retriever,
+        )
+
+        print()
+        print("-" * 80)
+        print(f"Backend: {backend_type}")
+        print("-" * 80)
+
+        print(
+            f"Hit@1:     "
+            f"{metrics['hit_at_1']:.3f}"
+        )
+
+        print(
+            f"Hit@3:     "
+            f"{metrics['hit_at_3']:.3f}"
+        )
+
+        print(
+            f"MRR:       "
+            f"{metrics['mrr']:.3f}"
+        )
+
+        print(
+            f"Recall@1:  "
+            f"{metrics['recall_at_1']:.3f}"
+        )
+
+        print(
+            f"Recall@3:  "
+            f"{metrics['recall_at_3']:.3f}"
+        )
+
+def compare_dense_vs_bm25():
+
+    dataset = load_evaluation_dataset()
+
+    retriever_types = [
+        "in_memory",
+        "bm25",
+    ]
+
+    print()
+    print("=" * 80)
+    print("DENSE VS BM25 COMPARISON")
+    print("=" * 80)
+
+    for retriever_type in retriever_types:
+
+        retriever = build_retriever(
+            vector_store_type=retriever_type
+        )
+
+        metrics, _ = evaluate_answerable_queries(
+            dataset,
+            retriever,
+        )
+
+        print()
+        print("-" * 80)
+        print(f"Retriever: {retriever_type}")
+        print("-" * 80)
+
+        print(f"Hit@1:    {metrics['hit_at_1']:.3f}")
+        print(f"Hit@3:    {metrics['hit_at_3']:.3f}")
+        print(f"MRR:      {metrics['mrr']:.3f}")
+        print(f"Recall@1: {metrics['recall_at_1']:.3f}")
+        print(f"Recall@3: {metrics['recall_at_3']:.3f}")
+
+
+def first_relevant_rank(
+    ranked_documents: list[str],
+    expected_documents: list[str],
+) -> int | None:
+
+    for rank, document in enumerate(
+        ranked_documents,
+        start=1,
+    ):
+        if document in expected_documents:
+            return rank
+
+    return None
+
+
+def compare_dense_vs_bm25_cases():
+
+    dataset = load_evaluation_dataset()
+
+    dense_retriever = build_retriever(
+        vector_store_type="in_memory"
+    )
+
+    bm25_retriever = build_retriever(
+        vector_store_type="bm25"
+    )
+
+    _, dense_results = evaluate_answerable_queries(
+        dataset,
+        dense_retriever,
+    )
+
+    _, bm25_results = evaluate_answerable_queries(
+        dataset,
+        bm25_retriever,
+    )
+
+    print()
+    print("=" * 80)
+    print("DENSE VS BM25 CASE-LEVEL COMPARISON")
+    print("=" * 80)
+
+    for dense_case, bm25_case in zip(
+        dense_results,
+        bm25_results,
+    ):
+        dense_rank = first_relevant_rank(
+            dense_case["ranked_documents"],
+            dense_case["expected_documents"],
+        )
+
+        bm25_rank = first_relevant_rank(
+            bm25_case["ranked_documents"],
+            bm25_case["expected_documents"],
+        )
+
+        if dense_rank != bm25_rank:
+            print()
+            print("-" * 80)
+
+            print(
+                f"ID: "
+                f"{dense_case['id']}"
+            )
+
+            print(
+                f"Category: "
+                f"{dense_case['category']}"
+            )
+
+            print(
+                f"Question: "
+                f"{dense_case['question']}"
+            )
+
+            print(
+                f"Expected: "
+                f"{dense_case['expected_documents']}"
+            )
+
+            print(
+                f"Dense rank: "
+                f"{dense_rank}"
+            )
+
+            print(
+                f"BM25 rank: "
+                f"{bm25_rank}"
+            )
+
+            print(
+                f"Dense documents: "
+                f"{dense_case['ranked_documents'][:3]}"
+            )
+
+            print(
+                f"BM25 documents: "
+                f"{bm25_case['ranked_documents'][:3]}"
+            )
 
 
 def save_json_result(
@@ -958,5 +1224,7 @@ def evaluate():
 
 
 if __name__ == "__main__":
-    evaluate()
-
+    # evaluate()
+    # compare_vector_store_backends()
+    # compare_dense_vs_bm25()
+    compare_dense_vs_bm25_cases()

@@ -3,7 +3,7 @@ from app.rag.embedding import (
 )
 
 from app.rag.models import (
-    RetrievalResult,
+    DocumentChunk,
 )
 
 from app.rag.vector_store import (
@@ -11,7 +11,7 @@ from app.rag.vector_store import (
 )
 
 
-class SemanticRetriever:
+class IndexingService:
 
     def __init__(
         self,
@@ -26,19 +26,23 @@ class SemanticRetriever:
             vector_store
         )
 
-    def retrieve(
+    def index(
         self,
-        query: str,
-        top_k: int = 3,
-    ) -> list[RetrievalResult]:
+        chunks: list[DocumentChunk],
+    ) -> None:
 
-        query_embedding = (
-            self.embedding_service.embed_text(
-                query
+        chunk_texts = [
+            chunk.content
+            for chunk in chunks
+        ]
+
+        embeddings = (
+            self.embedding_service.embed_texts(
+                chunk_texts
             )
         )
 
-        return self.vector_store.search(
-            query_embedding=query_embedding,
-            top_k=top_k,
+        self.vector_store.add(
+            chunks=chunks,
+            embeddings=embeddings,
         )

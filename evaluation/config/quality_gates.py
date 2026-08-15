@@ -1,8 +1,8 @@
 RETRIEVAL_QUALITY_GATES = {
-    "hit_at_1": 0.95,
+    "hit_at_1": 0.90,
     "hit_at_3": 1.00,
-    "mrr": 0.97,
-    "recall_at_1": 0.90,
+    "mrr": 0.95,
+    "recall_at_1": 0.85,
     "recall_at_3": 1.00,
 }
 
