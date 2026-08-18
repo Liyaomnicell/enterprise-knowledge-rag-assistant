@@ -7,10 +7,6 @@ from app.rag.chunker import chunk_documents
 from app.rag.embedding import EmbeddingService
 from app.rag.retriever import SemanticRetriever
 
-from app.rag.embedding import (
-    EmbeddingService,
-)
-
 from app.rag.in_memory_vector_store import (
     InMemoryVectorStore,
 )
@@ -19,16 +15,36 @@ from app.rag.indexing import (
     IndexingService,
 )
 
-from app.rag.retriever import (
-    SemanticRetriever,
-)
-
 from app.rag.faiss_vector_store import (
     FaissVectorStore,
 )
 
 from app.rag.bm25_retriever import (
     BM25Retriever,
+)
+
+from app.rag.hybrid_retriever import (
+    HybridRetriever,
+)
+
+from app.rag.rrf import (
+    ReciprocalRankFusion,
+)
+
+from app.rag.reranker import (
+    CrossEncoderReranker,
+)
+
+from app.rag.reranking_retriever import (
+    RerankingRetriever,
+)
+
+from app.rag.query_rewriter import (
+    SimpleQueryRewriter,
+)
+
+from app.rag.rewriting_retriever import (
+    RewritingRetriever,
 )
 
 EVALUATION_FILE = "data/evaluation/retrieval_eval.json"
@@ -61,11 +77,233 @@ def build_retriever(
         chunk_overlap=100,
     )
 
+    # -------------------------------------------------
+    # BM25 Retriever
+    # -------------------------------------------------
     if vector_store_type == "bm25":
         return BM25Retriever(
             chunks=chunks,
         )
 
+    # -------------------------------------------------
+    # Hybrid Retriever
+    # -------------------------------------------------
+    if vector_store_type == "hybrid":
+
+        embedding_service = (
+            EmbeddingService()
+        )
+
+        vector_store = (
+            InMemoryVectorStore()
+        )
+
+        indexing_service = (
+            IndexingService(
+                embedding_service=embedding_service,
+                vector_store=vector_store,
+            )
+        )
+
+        indexing_service.index(
+            chunks
+        )
+
+        dense_retriever = (
+            SemanticRetriever(
+                embedding_service=embedding_service,
+                vector_store=vector_store,
+            )
+        )
+
+        bm25_retriever = (
+            BM25Retriever(
+                chunks=chunks,
+            )
+        )
+
+        rrf = ReciprocalRankFusion(
+            k=60,
+        )
+
+        return HybridRetriever(
+            retrievers=[
+                dense_retriever,
+                bm25_retriever,
+            ],
+            fusion_strategy=rrf,
+            candidate_k=10,
+        )
+
+    if vector_store_type == "reranked_hybrid":
+
+        embedding_service = (
+            EmbeddingService()
+        )
+
+        vector_store = (
+            InMemoryVectorStore()
+        )
+
+        indexing_service = (
+            IndexingService(
+                embedding_service=embedding_service,
+                vector_store=vector_store,
+            )
+        )
+
+        indexing_service.index(
+            chunks
+        )
+
+        dense_retriever = (
+            SemanticRetriever(
+                embedding_service=embedding_service,
+                vector_store=vector_store,
+            )
+        )
+
+        bm25_retriever = (
+            BM25Retriever(
+                chunks=chunks,
+            )
+        )
+
+        rrf = ReciprocalRankFusion(
+            k=60,
+        )
+
+        hybrid_retriever = (
+            HybridRetriever(
+                retrievers=[
+                    dense_retriever,
+                    bm25_retriever,
+                ],
+                fusion_strategy=rrf,
+                candidate_k=10,
+            )
+        )
+
+        reranker = (
+            CrossEncoderReranker()
+        )
+
+        return RerankingRetriever(
+            base_retriever=hybrid_retriever,
+            reranker=reranker,
+            candidate_k=10,
+        )
+    
+    if vector_store_type == "rewritten_dense":
+
+        embedding_service = (
+            EmbeddingService()
+        )
+
+        vector_store = (
+            InMemoryVectorStore()
+        )
+
+        indexing_service = (
+            IndexingService(
+                embedding_service=embedding_service,
+                vector_store=vector_store,
+            )
+        )
+
+        indexing_service.index(
+            chunks
+        )
+
+        dense_retriever = (
+            SemanticRetriever(
+                embedding_service=embedding_service,
+                vector_store=vector_store,
+            )
+        )
+
+        query_rewriter = (
+            SimpleQueryRewriter()
+        )
+
+        return RewritingRetriever(
+            base_retriever=dense_retriever,
+            query_rewriter=query_rewriter,
+        )
+
+    if vector_store_type == "rewritten_reranked_hybrid":
+
+        embedding_service = (
+            EmbeddingService()
+        )
+
+        vector_store = (
+            InMemoryVectorStore()
+        )
+
+        indexing_service = (
+            IndexingService(
+                embedding_service=embedding_service,
+                vector_store=vector_store,
+            )
+        )
+
+        indexing_service.index(
+            chunks
+        )
+
+        dense_retriever = (
+            SemanticRetriever(
+                embedding_service=embedding_service,
+                vector_store=vector_store,
+            )
+        )
+
+        bm25_retriever = (
+            BM25Retriever(
+                chunks=chunks,
+            )
+        )
+
+        rrf = ReciprocalRankFusion(
+            k=60,
+        )
+
+        hybrid_retriever = (
+            HybridRetriever(
+                retrievers=[
+                    dense_retriever,
+                    bm25_retriever,
+                ],
+                fusion_strategy=rrf,
+                candidate_k=10,
+            )
+        )
+
+        reranker = (
+            CrossEncoderReranker()
+        )
+
+        reranked_hybrid = (
+            RerankingRetriever(
+                base_retriever=hybrid_retriever,
+                reranker=reranker,
+                candidate_k=10,
+            )
+        )
+
+        query_rewriter = (
+            SimpleQueryRewriter()
+        )
+
+        return RewritingRetriever(
+            base_retriever=reranked_hybrid,
+            query_rewriter=query_rewriter,
+        )
+
+    # -------------------------------------------------
+    # Dense Retrievers
+    # -------------------------------------------------
     embedding_service = (
         EmbeddingService()
     )
@@ -758,6 +996,294 @@ def compare_dense_vs_bm25_cases():
                 f"{bm25_case['ranked_documents'][:3]}"
             )
 
+def compare_retrieval_strategies():
+
+    dataset = load_evaluation_dataset()
+
+    retriever_types = [
+        "in_memory",
+        "bm25",
+        "hybrid",
+        "reranked_hybrid",
+    ]
+
+    print()
+    print("=" * 80)
+    print("RETRIEVAL STRATEGY COMPARISON")
+    print("=" * 80)
+
+    for retriever_type in retriever_types:
+
+        retriever = build_retriever(
+            vector_store_type=retriever_type
+        )
+
+        metrics, _ = evaluate_answerable_queries(
+            dataset,
+            retriever,
+        )
+
+        print()
+        print("-" * 80)
+        print(
+            f"Retriever: "
+            f"{retriever_type}"
+        )
+        print("-" * 80)
+
+        print(
+            f"Hit@1:    "
+            f"{metrics['hit_at_1']:.3f}"
+        )
+
+        print(
+            f"Hit@3:    "
+            f"{metrics['hit_at_3']:.3f}"
+        )
+
+        print(
+            f"MRR:      "
+            f"{metrics['mrr']:.3f}"
+        )
+
+        print(
+            f"Recall@1: "
+            f"{metrics['recall_at_1']:.3f}"
+        )
+
+        print(
+            f"Recall@3: "
+            f"{metrics['recall_at_3']:.3f}"
+        )
+
+def compare_dense_vs_hybrid_cases():
+
+    dataset = load_evaluation_dataset()
+
+    dense_retriever = build_retriever(
+        vector_store_type="in_memory"
+    )
+
+    hybrid_retriever = build_retriever(
+        vector_store_type="hybrid"
+    )
+
+    _, dense_results = evaluate_answerable_queries(
+        dataset,
+        dense_retriever,
+    )
+
+    _, hybrid_results = evaluate_answerable_queries(
+        dataset,
+        hybrid_retriever,
+    )
+
+    print()
+    print("=" * 80)
+    print("DENSE VS HYBRID CASE-LEVEL COMPARISON")
+    print("=" * 80)
+
+    for dense_case, hybrid_case in zip(
+        dense_results,
+        hybrid_results,
+    ):
+
+        dense_rank = first_relevant_rank(
+            dense_case["ranked_documents"],
+            dense_case["expected_documents"],
+        )
+
+        hybrid_rank = first_relevant_rank(
+            hybrid_case["ranked_documents"],
+            hybrid_case["expected_documents"],
+        )
+
+        if dense_rank != hybrid_rank:
+
+            print()
+            print("-" * 80)
+
+            print(
+                f"ID: {dense_case['id']}"
+            )
+
+            print(
+                f"Category: "
+                f"{dense_case['category']}"
+            )
+
+            print(
+                f"Question: "
+                f"{dense_case['question']}"
+            )
+
+            print(
+                f"Expected: "
+                f"{dense_case['expected_documents']}"
+            )
+
+            print(
+                f"Dense rank: "
+                f"{dense_rank}"
+            )
+
+            print(
+                f"Hybrid rank: "
+                f"{hybrid_rank}"
+            )
+
+            print(
+                f"Dense documents: "
+                f"{dense_case['ranked_documents'][:3]}"
+            )
+
+            print(
+                f"Hybrid documents: "
+                f"{hybrid_case['ranked_documents'][:3]}"
+            )
+
+def compare_dense_vs_reranked_cases():
+
+    dataset = load_evaluation_dataset()
+
+    dense_retriever = build_retriever(
+        vector_store_type="in_memory"
+    )
+
+    reranked_retriever = build_retriever(
+        vector_store_type="reranked_hybrid"
+    )
+
+    _, dense_results = evaluate_answerable_queries(
+        dataset,
+        dense_retriever,
+    )
+
+    _, reranked_results = evaluate_answerable_queries(
+        dataset,
+        reranked_retriever,
+    )
+
+    print()
+    print("=" * 80)
+    print("DENSE VS RERANKED CASE-LEVEL COMPARISON")
+    print("=" * 80)
+
+    for dense_case, reranked_case in zip(
+        dense_results,
+        reranked_results,
+    ):
+
+        dense_rank = first_relevant_rank(
+            dense_case["ranked_documents"],
+            dense_case["expected_documents"],
+        )
+
+        reranked_rank = first_relevant_rank(
+            reranked_case["ranked_documents"],
+            reranked_case["expected_documents"],
+        )
+
+        if dense_rank != reranked_rank:
+
+            print()
+            print("-" * 80)
+
+            print(
+                f"ID: {dense_case['id']}"
+            )
+
+            print(
+                f"Question: "
+                f"{dense_case['question']}"
+            )
+
+            print(
+                f"Expected: "
+                f"{dense_case['expected_documents']}"
+            )
+
+            print(
+                f"Dense rank: "
+                f"{dense_rank}"
+            )
+
+            print(
+                f"Reranked rank: "
+                f"{reranked_rank}"
+            )
+
+            print(
+                f"Dense documents: "
+                f"{dense_case['ranked_documents'][:3]}"
+            )
+
+            print(
+                f"Reranked documents: "
+                f"{reranked_case['ranked_documents'][:3]}"
+            )
+
+
+def compare_query_rewrite_strategies():
+
+    dataset = load_evaluation_dataset()
+
+    retriever_types = [
+        "in_memory",
+        "rewritten_dense",
+        "reranked_hybrid",
+        "rewritten_reranked_hybrid",
+    ]
+
+    print()
+    print("=" * 80)
+    print("QUERY REWRITE COMPARISON")
+    print("=" * 80)
+
+    for retriever_type in retriever_types:
+
+        retriever = build_retriever(
+            vector_store_type=retriever_type
+        )
+
+        metrics, _ = evaluate_answerable_queries(
+            dataset,
+            retriever,
+        )
+
+        print()
+        print("-" * 80)
+        print(
+            f"Retriever: "
+            f"{retriever_type}"
+        )
+        print("-" * 80)
+
+        print(
+            f"Hit@1:    "
+            f"{metrics['hit_at_1']:.3f}"
+        )
+
+        print(
+            f"Hit@3:    "
+            f"{metrics['hit_at_3']:.3f}"
+        )
+
+        print(
+            f"MRR:      "
+            f"{metrics['mrr']:.3f}"
+        )
+
+        print(
+            f"Recall@1: "
+            f"{metrics['recall_at_1']:.3f}"
+        )
+
+        print(
+            f"Recall@3: "
+            f"{metrics['recall_at_3']:.3f}"
+        )
+
 
 def save_json_result(
     metrics,
@@ -1227,4 +1753,8 @@ if __name__ == "__main__":
     # evaluate()
     # compare_vector_store_backends()
     # compare_dense_vs_bm25()
-    compare_dense_vs_bm25_cases()
+    # compare_dense_vs_bm25_cases()
+    # compare_retrieval_strategies()
+    # compare_dense_vs_hybrid_cases()
+    # compare_dense_vs_reranked_cases()
+    compare_query_rewrite_strategies()
